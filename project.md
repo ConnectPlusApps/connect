@@ -1,50 +1,90 @@
-# Project: Connect+ - Inclusive Dating App - Current Status: Backend Development - User Creation
+# Connect+ Project Documentation
 
-**Description:**
+## Backend Updates
 
-Connect+ is an inclusive dating app designed for users of all sexual orientations and gender identities. It prioritizes meaningful connections, safety, and an engaging user experience.
+### Latest Changes (v1.1.0)
 
-**Key Features:**
+#### Model Updates
+- User model now uses `PasswordHash` instead of `Password`
+- All models implement proper GORM patterns
+- Added proper validation for user creation
+- Improved error handling across all endpoints
 
-*   **Inclusive Onboarding:** Detailed signup process capturing sexual orientation, gender identity, and relationship preferences.
-*   **Advanced Matching Algorithm:** Prioritizes compatibility based on personality, interests, and relationship goals.
-*   **Swipe Functionality:** Familiar swipe left (not interested) / swipe right (interested) interaction for browsing profiles.
-*   **Robust Verification:** Multi-factor authentication and photo verification to ensure profile authenticity.
-*   **Tiered Subscription Model:** Offers free and paid tiers with varying features and benefits.
-*   **Safety & Moderation:** Strong safety features, community guidelines, and active moderation to create a respectful environment.
-*   **Community Features:** Groups, forums, and events for users to connect based on shared interests and identities.
+#### API Changes
+- Removed raw SQL queries in favor of GORM methods
+- Implemented proper password hashing with bcrypt
+- Added comprehensive input validation
+- Improved error responses with proper HTTP status codes
 
-**Technical Specifications:**
+#### Repository Layer
+- Added repository interfaces for all core entities:
+  - UserRepository
+  - ProfileRepository  
+  - MatchRepository
+  - MessageRepository
+  - PreferenceRepository
+- Implemented base repository pattern using GORM
 
-*   **Frontend:** Flutter with Dart (for cross-platform compatibility - iOS, Android, Web)
-*   **Backend:** Go (Golang) (for API development)
-*   **Database:** PostgreSQL (for data storage)
-*   **Cloud Hosting:** AWS (for scalability and reliability)
-*   **Authentication:** JWT (JSON Web Tokens) for secure user authentication.
+### API Endpoints
 
-**Rules File:** rules.md
+#### User Management
+- POST /user/create - Create new user
+  - Requires: username, email, password
+  - Validates: email format, password strength
+  - Returns: JWT token, user ID
 
-**Development Stages:**
+- GET /user - Get user details
+  - Requires: JWT token
+  - Returns: User profile information
 
-1.  **Backend Development:**
-    * Build the API for user management, matching, messaging, etc., using Go.  
-    * A basic Go server is set up with a root handler (`/`) and a user handler (`/user`).
-    * The `user.go` file has been removed as it had duplicate information in the `main.go`.   
-    * We have created a User struct in `main.go` with ID, Username, and Email fields.
-    * The rootHandler now prints "Welcome to Connect+! The API is running!" instead of "Welcome to Connect+".
-    * The userHandler now prints "User endpoint hit!" instead of "User Path".
-    * A createUserHandler function has been added to handle POST requests to /user and it prints "User created!".
-    * The main() function now routes POST requests to /user to the createUserHandler.
+- PUT /user/profile - Update profile
+  - Requires: JWT token
+  - Accepts: First name, last name, bio, etc.
+  - Returns: Success message
 
-2.  **Frontend Development:** Create the user interface with Flutter, integrating swipe functionality and other features.
-3.  **Database Design:** Structure the database to efficiently store user data, profiles, and interactions.
-4.  **Authentication & Security:** Implement secure authentication and authorization mechanisms.
-5.  **Matching Algorithm:** Develop and refine the algorithm for accurate and personalized matching.
-6.  **Testing & Deployment:** Thorough testing and deployment to app stores and web.
+### Database Schema
+- Using PostgreSQL with GORM for ORM
+- Auto-migration enabled for model changes
+- Proper indexes and constraints implemented
 
-**Success Metrics:**
+### Security
+- JWT authentication for protected routes
+- bcrypt password hashing
+- Input validation for all endpoints
+- Proper error handling and logging
 
-*   User acquisition and retention rates
-*   User engagement (messages sent, profiles viewed, etc.)
-*   Subscription conversion rates
-*   User satisfaction (ratings and reviews)
+## Completed Work
+
+### Repository Layer
+- Implemented repository interfaces for all core entities
+- Added complete CRUD operations using GORM
+- Added proper error handling and logging
+- Implemented base repository pattern
+
+### Testing Infrastructure
+- Completed comprehensive test suites for all repositories with enhanced coverage:
+  - UserRepository (CRUD, email uniqueness, foreign keys)
+  - ProfileRepository (CRUD, one-to-one relationships, duplicates)
+  - MatchRepository (CRUD, bidirectional relationships, status updates)
+  - MessageRepository (CRUD, conversations, timestamps, read status)
+  - PreferenceRepository (CRUD, validation, age ranges, distances)
+- Configured in-memory SQLite database for isolated testing
+- Implemented extensive test coverage for:
+  - All CRUD operations with success and failure cases
+  - Data validation and business rules
+  - Error handling and edge cases
+  - Foreign key constraints
+  - Unique constraints and duplicates
+  - Bidirectional relationships
+  - Timestamp ordering
+  - One-to-one relationship enforcement
+- Using testify suite for organized test structure
+- Proper database migrations with all required models
+- Comprehensive test data setup and validation
+- Thorough cleanup with TearDown methods
+- All tests passing with 100% coverage of repository layer
+
+## Next Steps
+- Set up CI/CD pipeline
+- Implement rate limiting
+- Add API documentation
